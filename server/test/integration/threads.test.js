@@ -1,4 +1,4 @@
-const chai = require('chai'); 
+const chai = require('chai');
 
 const request = require('supertest');
 
@@ -14,68 +14,91 @@ const expect = chai.expect;
 
 
 
-describe('Threads endpoint', () =>{
+describe('Threads endpoint', () => {
 
-	describe('when callng GET /threads' , ()=>{
-
-		before(async () => await fixtures.seedThreads());
-
-		after(async () => await mongoosehelper.dropDatabase());
-
-		
-
-		it ('return a list of threads', () =>{
+	describe('when callng GET /threads', () => {
 
 
-			return request(app).get('/threads')
+		describe('when the database has threads', () => {
 
-			
-			.expect('Content-type', /json/)
+			before(async () => await fixtures.seedThreads());
 
-			.expect(200)
+			after(async () => await mongoosehelper.dropDatabase());
 
-			.then(response =>{
-
-				const { body } = response;
+			it('return a list of threads', () => {
 
 
-				expect(body.data).to.have.length(2);
+				return request(app).get('/threads')
 
-				expect(body.data[0].title).to.equal('El sistema de matricula esta dañado');
 
-				expect(body.data[0].slug).to.equal('el-sistema-de-matricula-esta-danado');
+					.expect('Content-type', /json/)
 
-				expect(body.data[1].title).to.equal('El problema de transporte en Panama');
+					.expect(200)
 
-				expect(body.data[1].slug).to.equal('el-problema-de-transporte-en-panama');
+					.then(response => {
+
+						const {
+							body
+						} = response;
+
+
+						expect(body.data).to.have.length(2);
+
+						expect(body.data[0].title).to.equal('El sistema de matricula esta dañado');
+
+						expect(body.data[0].slug).to.equal('el-sistema-de-matricula-esta-danado');
+
+						expect(body.data[1].title).to.equal('El problema de transporte en Panama');
+
+						expect(body.data[1].slug).to.equal('el-problema-de-transporte-en-panama');
+
+
+					});
 
 
 			});
 
+		});
+
+		describe('when there is no data', () => {
+
+
+			it('returns an empty arrays if there are no threads', () => {
+
+
+				return request(app).get('/threads')
+
+
+					.expect('Content-type', /json/)
+
+					.expect(200)
+
+					.then(response => {
+
+						const {
+							body
+						} = response;
+
+
+						expect(body.data).to.have.length(0);
+
+
+
+					});
+
+
+			});
 
 		});
 
-
-		xit('returns an empty arrays if there are no threads', () =>{
-
-
-		})
-
-
-		xit('returns an empty arrays if rhere are no threads', () => {
-
-
-		});
 
 	});
 
 
-describe('when calling POST /', () =>{
+	describe('when calling POST /', () => {
 
 
-})
-
-
+	})
 
 
 

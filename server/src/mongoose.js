@@ -10,6 +10,4 @@ const mongoURL = process.env.NODE_ENV ==='test'
 mongoose.connect(mongoURL)
 
 
-
-
 module.exports = mongoose;
