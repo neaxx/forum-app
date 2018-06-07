@@ -3,25 +3,26 @@ const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 
-const index = require('./routes/index');
-const users = require('./routes/users');
+
+const mongoose = require('./mongoose.js');
+const threadsRouter = require('./routes/threads');
+
 
 const app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
-app.use(logger('dev'));
+if (process.env.NODE_ENV !== 'test') {
+
+  app.use(logger('dev'));
+}
+
 app.use(bodyParser.json());
 
-app.use('/', index);
-app.use('/users', users);
+app.use('/threads', threadsRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  let err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
@@ -30,14 +31,16 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   const message = err.message;
-  const stack = req.app.get('env') === 'development' ? err.stack : {};
+  const stack = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
   res.json({
-  	stack,
-  	message
-  });
+    stack,
+    message
+  })
 });
 
+
 module.exports = app;
+
